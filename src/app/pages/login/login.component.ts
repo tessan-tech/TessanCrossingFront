@@ -1,5 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { Component } from '@angular/core';
+import {
+  FormBuilder,
+  FormControl,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
 import { TessanCrossingApiService } from 'src/services/api/tessan-crossing-api-service';
 
@@ -8,8 +13,8 @@ import { TessanCrossingApiService } from 'src/services/api/tessan-crossing-api-s
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent implements OnInit {
-  public loginFormGroup: UntypedFormGroup;
+export class LoginComponent {
+  public loginFormGroup!: UntypedFormGroup;
   public emailControl: FormControl;
   public passwordControl: FormControl;
   public showPassword = false;
@@ -17,17 +22,21 @@ export class LoginComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private tessanCrossingApiService: TessanCrossingApiService
+    private tessanCrossingApiService: TessanCrossingApiService,
+    private fb: FormBuilder
   ) {
     this.emailControl = new FormControl('', Validators.required);
     this.passwordControl = new FormControl('', Validators.required);
-    this.loginFormGroup = new UntypedFormGroup({
+    this.loginFormGroup = this.fb.group({
       email: this.emailControl,
       password: this.passwordControl,
     });
-  }
 
-  async ngOnInit(): Promise<void> {}
+    /*new UntypedFormGroup({
+      email: this.emailControl,
+      password: this.passwordControl,
+    });*/
+  }
 
   public login(form: UntypedFormGroup): void {
     this.loading = true;
