@@ -1,8 +1,6 @@
-import { CommonModule } from "@angular/common";
 import { Component, OnInit } from "@angular/core";
-import { FormControl, ReactiveFormsModule, UntypedFormGroup, Validator, Validators } from "@angular/forms";
+import { FormControl, UntypedFormGroup, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { lastValueFrom } from "rxjs";
 import { TessanCrossingApiService } from "src/services/api/tessan-crossing-api-service";
 
 @Component({
@@ -48,21 +46,19 @@ export class LoginComponent implements OnInit {
       return;
     }
     const { email, password } = form.value;
-    let error = "";
-    var call = this.tessanCrossingApiService
-      .login(email, password);
-
-    var result = lastValueFrom(call)
-      .then((AuthResult) => {
-        if (AuthResult)
-        {
-          console.log("LOGGED IN");
-        }
-        return this.router.navigate(["/pages/lobby"]);
-      })
-      .catch((e) => {
-      })
-      .finally(() => (this.loading = false));
+    let call = this.tessanCrossingApiService
+      .login(email, password).subscribe(
+        { next: (res:any) =>
+            {
+              console.log(res.doctorName);
+              return this.router.navigate(["/lobby" , { DoctorName: res.doctorName }]);
+            },
+          error: (err: any) =>
+            {
+              err.Errorr
+              console.log("error: " + JSON.stringify(err));
+            }
+        });
   }
 
 }
